@@ -1,15 +1,41 @@
 package edu.skku.database.s2014312794.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public class User implements Model {
+public class User {
     private String id;
     private String name;
-    private Role role;
+    private UserRole role;
+    private String accountNumber;
     private String address;
     private String phone;
-    private Date birthday;
-    private Date joinDate;
+    private LocalDate birthday;
+    private LocalDate joinDate;
+    private Boolean subscription;
+
+    public User() {
+    }
+
+    public User(String id) {
+        this.id = id;
+    }
+
+    public User(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public User(String id, String name, UserRole role, String accountNumber, String address, String phone, LocalDate birthday, LocalDate joinDate, Boolean subscription) {
+        this.id = id;
+        this.name = name;
+        this.role = role;
+        this.accountNumber = accountNumber;
+        this.address = address;
+        this.phone = phone;
+        this.birthday = birthday;
+        this.joinDate = joinDate;
+        this.subscription = subscription;
+    }
 
     public String getId() {
         return id;
@@ -27,12 +53,20 @@ public class User implements Model {
         this.name = name;
     }
 
-    public Role getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public String getAddress() {
@@ -51,19 +85,27 @@ public class User implements Model {
         this.phone = phone;
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 
-    public Date getJoinDate() {
+    public LocalDate getJoinDate() {
         return joinDate;
     }
 
-    public void setJoinDate(Date joinDate) {
+    public void setJoinDate(LocalDate joinDate) {
         this.joinDate = joinDate;
+    }
+
+    public Boolean getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Boolean subscription) {
+        this.subscription = subscription;
     }
 }

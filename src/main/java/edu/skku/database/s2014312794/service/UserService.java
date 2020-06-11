@@ -1,25 +1,16 @@
 package edu.skku.database.s2014312794.service;
 
 import edu.skku.database.s2014312794.database.DataSource;
-import edu.skku.database.s2014312794.model.Role;
+import edu.skku.database.s2014312794.model.UserRole;
 import edu.skku.database.s2014312794.model.User;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class UserService {
-    public static boolean isValidUser(String id, String pw) {
-        String sql = "SELECT IF((SELECT pw FROM users WHERE id = :id) = SHA1(:pw), true, false)";
-
-        return DataSource.getConnection().withHandle(handle -> handle.createQuery(sql)
-                .bind("id", id)
-                .bind("pw", pw)
-                .mapTo(Boolean.class)
-                .one());
-    }
-
     public static User getUser(String id) {
         String sql = "SELECT * FROM users WHERE id = :id";
 
@@ -29,7 +20,7 @@ public class UserService {
                 .one());
     }
 
-    public static void updateUser(String id) {
+    public static void updateUser(String id, User user) {
         return;
     }
 
@@ -49,11 +40,12 @@ public class UserService {
 
             user.setId(rs.getString("id"));
             user.setName(rs.getString("name"));
-            user.setRole(Role.valueOf(rs.getString("role")));
+            user.setRole(UserRole.valueOf(rs.getString("role")));
             user.setAddress(rs.getString("address"));
             user.setPhone(rs.getString("phone"));
-            user.setBirthday(rs.getDate("birthday"));
-            user.setJoinDate(rs.getDate("join_date"));
+            user.setBirthday(rs.getObject("birthday", LocalDate.class));
+            user.setJoinDate(rs.getObject("join_date", LocalDate.class));
+            user.setSubscription(rs.getBoolean("subscription"));
 
             return user;
         }

@@ -3,6 +3,8 @@ package edu.skku.database.s2014312794.security;
 import edu.skku.database.s2014312794.model.User;
 
 public class LoginContextHolder {
+    private User loginUser;
+
     private static class InstanceHolder {
         public static final LoginContextHolder INSTANCE = new LoginContextHolder();
     }
@@ -14,7 +16,6 @@ public class LoginContextHolder {
         return InstanceHolder.INSTANCE;
     }
 
-    private User loginUser;
 
     public static boolean isLogin() {
         return LoginContextHolder.getInstance().loginUser != null;
