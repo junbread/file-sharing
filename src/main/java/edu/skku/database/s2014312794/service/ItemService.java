@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemService {
-
     public static Item getItem(int id) {
         return DataSource.getConnection().withHandle(handle ->
                 handle.createQuery("SELECT * FROM items_ext WHERE id = :id")
@@ -22,21 +21,51 @@ public class ItemService {
 
     public static List<Item> getItems(Map<String, String> criteria) {
         StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM items_ext WHERE 1=1");
-        if (criteria.containsKey("author_id"))
-            sqlBuilder.append(" AND author_id = :author_id");
-        if (criteria.containsKey("category_id"))
-            sqlBuilder.append(" AND category_id = :category_id");
-        if (criteria.containsKey("hardware"))
-            sqlBuilder.append(" AND hardware = :hardware");
-        if (criteria.containsKey("os"))
-            sqlBuilder.append(" AND os = :os");
-        sqlBuilder.append(" ORDER BY id ASC");
+        criteria.forEach((key, value) -> {
+            if (key.equals("name"))
+                sqlBuilder.append(" AND " + key + " LIKE CONCAT('%',:" + key + ",'%')");
+            else
+                sqlBuilder.append(" AND " + key + " = :" + key);
+        });
 
         return DataSource.getConnection().withHandle(handle ->
                 handle.createQuery(sqlBuilder.toString())
                         .bindMap(criteria)
                         .map(new ItemMapper())
                         .list());
+    }
+
+    public static List<Item> getDependencies(int itemId) {
+        String sql = "SELECT * FROM dependencies_ext WHERE item_id = :item_id";
+
+        return DataSource.getConnection().withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("item_id", itemId)
+                        .map((rs, ctx) -> new Item(
+                                rs.getInt("require_item_id"),
+                                null,
+                                null,
+                                rs.getString("require_item_name"),
+                                null,
+                                rs.getInt("require_item_size"),
+                                rs.getString("require_item_url"),
+                                null,
+                                ItemHardware.valueOf(rs.getString("require_item_hardware")),
+                                ItemOs.valueOf(rs.getString("require_item_os")),
+                                null))
+                        .list()
+        );
+    }
+
+    public static void insertDownloadLog(User user, Item item) {
+        String sql = "INSERT INTO downloads (user_id, item_id) VALUES (:user_id, :item_id)";
+
+        System.out.println(user.getId());
+        DataSource.getConnection().useHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("user_id", user.getId())
+                        .bind("item_id", item.getId())
+                        .execute());
     }
 
     public static void insertItem(Item item) {
@@ -59,6 +88,7 @@ public class ItemService {
         DataSource.getConnection().useHandle(handle ->
                 handle.createUpdate(sql)
                         .bindBean(item)
+                        .bind("id", id)
                         .execute());
     }
 

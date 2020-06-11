@@ -81,6 +81,9 @@
                         <manifest>
                             <mainClass>edu.skku.database.s2014312794.Runner</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Class-Path>.</Class-Path>
+                        </manifestEntries>
                     </archive>
                 </configuration>
                 <executions>

@@ -23,7 +23,7 @@ public class ItemManageMenu extends AbstractMenu {
 
     @Override
     public String name() {
-        return "Item Manage";
+        return "Manage Item";
     }
 
     @Override

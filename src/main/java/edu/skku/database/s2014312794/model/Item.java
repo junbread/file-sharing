@@ -15,6 +15,23 @@ public class Item {
     private ItemOs os;
     private String description;
 
+    public Item() {
+    }
+
+    public Item(Integer id, User author, ItemType type, String name, Category category, Integer size, String url, Date updateTime, ItemHardware hardware, ItemOs os, String description) {
+        this.id = id;
+        this.author = author;
+        this.type = type;
+        this.name = name;
+        this.category = category;
+        this.size = size;
+        this.url = url;
+        this.updateTime = updateTime;
+        this.hardware = hardware;
+        this.os = os;
+        this.description = description;
+    }
+
     public Integer getId() {
         return id;
     }
