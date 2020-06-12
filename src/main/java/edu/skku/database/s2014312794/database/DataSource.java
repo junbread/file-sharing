@@ -24,7 +24,6 @@ public class DataSource {
 
             connection = Jdbi.create(ds);
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Cannot connect to database");
         }
     }
