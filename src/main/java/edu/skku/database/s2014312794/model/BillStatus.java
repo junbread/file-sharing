@@ -1,6 +1,6 @@
 package edu.skku.database.s2014312794.model;
 
-public enum PaymentStatus {
+public enum BillStatus {
     PENDING,
-    FINISHED;
+    FINISHED
 }

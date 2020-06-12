@@ -11,10 +11,13 @@ import edu.skku.database.s2014312794.ui.Option;
 import edu.skku.database.s2014312794.util.ConsoleUtil;
 import edu.skku.database.s2014312794.util.TableUtil;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ItemSearchMenu extends AbstractMenu {
+public class ItemDownloadMenu extends AbstractMenu {
 
     @Override
     public String name() {
@@ -49,10 +52,10 @@ public class ItemSearchMenu extends AbstractMenu {
         }
     }
 
-    private Map<String, String> doCriteria() {
+    private Map<String, Object> doCriteria() {
         System.out.println("Which criteria do you use?");
 
-        Map<String, String> criteria = new HashMap<>();
+        Map<String, Object> criteria = new HashMap<>();
         List<Option<Runnable>> options = Arrays.asList(
                 new Option<>("Category", "general category. ex) Education", () -> {
                     System.out.println("Category Information");
@@ -64,7 +67,7 @@ public class ItemSearchMenu extends AbstractMenu {
                                     .collect(Collectors.toList());
 
                     Category selectedCategory = ConsoleUtil.selectOption(categories, true).value();
-                    criteria.put("category_id", selectedCategory.getName());
+                    criteria.put("category_id", selectedCategory.getId());
                 }),
                 new Option<>("OS", "computer's operating system.", () -> {
                     System.out.println("OS Information (WINDOWS/MAC/LINUX)");
@@ -89,7 +92,7 @@ public class ItemSearchMenu extends AbstractMenu {
     protected void doBody() {
         List<Item> items = ItemService.getItems(doCriteria());
 
-        System.out.printf("%d items matched. Select to download.\n", items.size());
+        System.out.printf("\n%d items matched. Select to download.\n", items.size());
 
         AsciiTable table = TableUtil.createIndexedTable(
                 Arrays.asList("Name", "Category", "Author", "Type", "Size", "Hardware", "OS", "Last modified", "Description"),

@@ -1,11 +1,8 @@
 package edu.skku.database.s2014312794.database;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.jdbi.v3.core.ConnectionException;
 import org.jdbi.v3.core.Jdbi;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;

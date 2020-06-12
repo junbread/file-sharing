@@ -26,7 +26,7 @@ public class SecurityService {
     }
 
     public static boolean login(String id, String pw) {
-        String sql1 = "SELECT (SELECT pw FROM users WHERE id = :id) = SHA1(:pw)";
+        String sql1 = "SELECT IFNULL((SELECT pw FROM users WHERE id = :id) = SHA1(:pw), false)";
         Boolean isValidUser = DataSource.getConnection().withHandle(handle -> handle.createQuery(sql1)
                 .bind("id", id)
                 .bind("pw", pw)

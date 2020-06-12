@@ -3,6 +3,7 @@ package edu.skku.database.s2014312794.service;
 import edu.skku.database.s2014312794.database.DataSource;
 import edu.skku.database.s2014312794.model.*;
 import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.statement.PreparedBatch;
 import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ public class ItemService {
                         .one());
     }
 
-    public static List<Item> getItems(Map<String, String> criteria) {
+    public static List<Item> getItems(Map<String, Object> criteria) {
         StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM items_ext WHERE 1=1");
         criteria.forEach((key, value) -> {
             if (key.equals("name"))
@@ -27,6 +28,7 @@ public class ItemService {
             else
                 sqlBuilder.append(" AND " + key + " = :" + key);
         });
+        sqlBuilder.append(" AND deleted = false");
 
         return DataSource.getConnection().withHandle(handle ->
                 handle.createQuery(sqlBuilder.toString())
@@ -60,7 +62,6 @@ public class ItemService {
     public static void insertDownloadLog(User user, Item item) {
         String sql = "INSERT INTO downloads (user_id, item_id) VALUES (:user_id, :item_id)";
 
-        System.out.println(user.getId());
         DataSource.getConnection().useHandle(handle ->
                 handle.createUpdate(sql)
                         .bind("user_id", user.getId())
@@ -68,15 +69,28 @@ public class ItemService {
                         .execute());
     }
 
-    public static void insertItem(Item item) {
-        String sql = "INSERT INTO items" +
-                " (author_id, type, name, category, size, url, hardware, os, viewer_id, description)" +
-                " VALUES(:author.id, :type, :name, :category, :size, :url, :hardware, :os, :viewer.id, :description)";
+    public static void insertItem(Item item, List<Item> dependencies) {
+        String insertSql = "INSERT INTO items" +
+                " (author_id, type, name, category_id, size, url, hardware, os, description)" +
+                " VALUES(:author.id, :type, :name, :category.id, :size, :url, :hardware, :os, :description)";
 
-        DataSource.getConnection().useHandle(handle ->
-                handle.createUpdate(sql)
-                        .bindBean(item)
-                        .execute());
+        String dependencySql = "INSERT INTO dependencies (item_id, require_item_id) values (:item_id, :require_item_id)";
+
+        DataSource.getConnection().useTransaction(handle -> {
+            int id = handle.createUpdate(insertSql).bindBean(item)
+                    .executeAndReturnGeneratedKeys()
+                    .mapTo(Integer.class)
+                    .one();
+            if (!dependencies.isEmpty()) {
+                PreparedBatch b = handle.prepareBatch(dependencySql);
+                dependencies.forEach(d -> b
+                        .bind("item_id", id)
+                        .bind("require_item_id", d.getId())
+                        .add(dependencySql)
+                );
+                b.execute();
+            }
+        });
     }
 
     public static void updateItem(int id, Item item) {
@@ -93,7 +107,7 @@ public class ItemService {
     }
 
     public static void deleteItem(int id) {
-        String sql = "DELETE FROM items WHERE id=:id";
+        String sql = "UPDATE items SET deleted = true WHERE id=:id";
 
         DataSource.getConnection().useHandle(handle ->
                 handle.createUpdate(sql)

@@ -5,10 +5,8 @@ import edu.skku.database.s2014312794.ui.Selectable;
 
 import java.io.Console;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class ConsoleUtil {
     public static class BackSelectedException extends RuntimeException {
@@ -24,9 +22,9 @@ public class ConsoleUtil {
         String selectStr;
         while (true) {
             if (disableBack)
-                System.out.println("\nPlease select option (input x to exit program)");
+                System.out.println("Please select option (input x to exit program)");
             else
-                System.out.println("\nPlease select option (input b to back, input x to exit program)");
+                System.out.println("Please select option (input b to back, input x to exit program)");
 
             System.out.println(table.render());
 
@@ -59,14 +57,17 @@ public class ConsoleUtil {
 
         while (true) {
             if (disableBack)
-                System.out.println("\nPlease select options. separate with commas. (input x to exit program)");
+                System.out.println("Please select options. separate with commas. (input x to exit program)");
             else
-                System.out.println("\nPlease select options separate with commas. (input b to back, input x to exit program)");
+                System.out.println("Please select options separate with commas. (input b to back, input x to exit program)");
 
             System.out.println("┌──────────────────────────────────────────────────────────────────────────────┐");
 
             for (int i = 0; i < options.size(); i++)
-                System.out.printf("%d) %s: %s\n", i + 1, options.get(i).name(), options.get(i).description());
+                if (options.get(i).description() == null || options.get(i).description().isEmpty())
+                    System.out.printf("%d) %s\n", i + 1, options.get(i).name());
+                else
+                    System.out.printf("%d) %s: %s\n", i + 1, options.get(i).name(), options.get(i).description());
 
             System.out.println("└──────────────────────────────────────────────────────────────────────────────┘");
 
@@ -104,14 +105,17 @@ public class ConsoleUtil {
 
         while (true) {
             if (disableBack)
-                System.out.println("\nPlease select option (input x to exit program)");
+                System.out.println("Please select option (input x to exit program)");
             else
-                System.out.println("\nPlease select option (input b to back, input x to exit program)");
+                System.out.println("Please select option (input b to back, input x to exit program)");
 
             System.out.println("┌──────────────────────────────────────────────────────────────────────────────┐");
 
             for (int i = 0; i < options.size(); i++)
-                System.out.printf("%d) %s: %s\n", i + 1, options.get(i).name(), options.get(i).description());
+                if (options.get(i).description() == null || options.get(i).description().isEmpty())
+                    System.out.printf("%d) %s\n", i + 1, options.get(i).name());
+                else
+                    System.out.printf("%d) %s: %s\n", i + 1, options.get(i).name(), options.get(i).description());
 
             System.out.println("└──────────────────────────────────────────────────────────────────────────────┘");
 

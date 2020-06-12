@@ -8,12 +8,9 @@ import edu.skku.database.s2014312794.ui.Option;
 import edu.skku.database.s2014312794.util.ConsoleUtil;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class SubscriptionMenu extends AbstractMenu {
 
@@ -52,10 +49,10 @@ public class SubscriptionMenu extends AbstractMenu {
 
         List<Option<Runnable>> options = new ArrayList<>();
         if (subscription) {
-            System.out.printf("Subscription activated. Next payment due is %s.\n", nextPaymentDue);
+            System.out.printf("Subscription activated. Next payment due is %s.\n\n", nextPaymentDue);
             options.add(new Option<>("Unsubscribe", "deactivate your subscription.", this::unsubscribe));
         } else {
-            System.out.println("Subscription deactivated. To use our system, you need to subscribe.");
+            System.out.println("Subscription deactivated. To use our system, you need to subscribe.\n");
             options.add(new Option<>("Subscribe", "activate your subscription.", this::subscribe));
         }
 

@@ -1,34 +1,24 @@
 package edu.skku.database.s2014312794.service;
 
 import edu.skku.database.s2014312794.database.DataSource;
+import edu.skku.database.s2014312794.model.Bill;
+import edu.skku.database.s2014312794.model.User;
 
-import java.util.List;
-import java.util.Map;
-
+import java.util.Optional;
 
 public class PaymentService {
+    public static Optional<Bill> getCurrentBill(User user) {
+        String sql = "SELECT * FROM bills WHERE user_id = :id ORDER BY issue_date DESC LIMIT 1";
 
-    private static Long joiningFee;
-    private static Long subscriptionFee;
-    private static Long downloadRate;
-    private static Long uploadRate;
+        return DataSource.getConnection().withHandle(handle ->
+                handle.createQuery(sql)
+                        .bindBean(user)
+                        .mapToBean(Bill.class)
+                        .findOne());
+    }
 
-    static {
-        String sql = "SELECT * FROM fees";
-        List<Map<String, Object>> results =
-                DataSource.getConnection().withHandle(handle -> handle.createQuery(sql)
-                        .mapToMap()
-                        .list());
-
-        for (Map<String, Object> m : results) {
-            if (m.containsValue("joining"))
-                joiningFee = (Long) m.get("value");
-            if (m.containsValue("subscription"))
-                subscriptionFee = (Long) m.get("value");
-            if (m.containsValue("download_rate"))
-                downloadRate = (Long) m.get("value");
-            if (m.containsValue("upload_rate"))
-                uploadRate = (Long) m.get("value");
-        }
+    public static void doPayment(User user) {
+        String sql = "UPDATE bills SET status = 'FINISHED' WHERE user_id = :id AND status = 'PENDING'";
+        DataSource.getConnection().useHandle(handle -> handle.createUpdate(sql).bindBean(user).execute());
     }
 }

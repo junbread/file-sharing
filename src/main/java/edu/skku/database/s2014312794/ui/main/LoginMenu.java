@@ -43,7 +43,7 @@ public class LoginMenu implements Menu {
             System.out.print("\nYour identity is incorrect. Please try again.\n");
         }
 
-        System.out.printf("\nLogin Success. Welcome back %s!", LoginContextHolder.getLoginUser().getName());
+        System.out.printf("\nLogin Success. Welcome back %s!\n", LoginContextHolder.getLoginUser().getName());
 
         main.run();
     }

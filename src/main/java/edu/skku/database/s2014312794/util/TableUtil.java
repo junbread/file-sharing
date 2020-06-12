@@ -12,13 +12,13 @@ public class TableUtil {
         AsciiTable table = new AsciiTable();
         table.getRenderer().setCWC(new CWC_LongestLine());
 
-        table.addRule();
-
         List<String> indexedHeader = new ArrayList<>();
         indexedHeader.add("No.");
         indexedHeader.addAll(header);
 
+        table.addRule();
         table.addRow(indexedHeader);
+        table.addRule();
 
         for (int i = 0; i < contents.size(); i++) {
             List<Object> indexedContent = new ArrayList<>();
@@ -38,9 +38,10 @@ public class TableUtil {
 
         table.addRule();
         table.addRow(header);
+        table.addRule();
 
-        for (int i = 0; i < contents.size(); i++) {
-            table.addRow(contents.get(i));
+        for (List<?> content : contents) {
+            table.addRow(content);
             table.addRule();
         }
 

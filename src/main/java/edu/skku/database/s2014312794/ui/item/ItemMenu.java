@@ -1,15 +1,24 @@
 package edu.skku.database.s2014312794.ui.item;
 
+import edu.skku.database.s2014312794.model.UserRole;
+import edu.skku.database.s2014312794.security.LoginContextHolder;
 import edu.skku.database.s2014312794.ui.AbstractMenu;
 import edu.skku.database.s2014312794.ui.Menu;
 import edu.skku.database.s2014312794.util.ConsoleUtil;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ItemMenu extends AbstractMenu {
 
-    public static final List<Menu> options = Arrays.asList(new ItemSearchMenu(), new ItemManageMenu());
+    public static final Map<UserRole, List<Menu>> options = new HashMap<>();
+
+    static {
+        options.put(UserRole.PROVIDER, Arrays.asList(new ItemUploadMenu(), new ItemManageMenu()));
+        options.put(UserRole.SUBSCRIBER, Arrays.asList(new ItemDownloadMenu()));
+    }
 
     @Override
     public String name() {
@@ -23,6 +32,7 @@ public class ItemMenu extends AbstractMenu {
 
     @Override
     protected void doBody() {
-        ConsoleUtil.selectOption(options, false).run();
+        List<Menu> currentRoleOptions = options.get(LoginContextHolder.getLoginUser().getRole());
+        ConsoleUtil.selectOption(currentRoleOptions, false).run();
     }
 }
